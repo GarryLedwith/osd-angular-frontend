@@ -1,10 +1,143 @@
-<h1>ATU Lab Equipment Loaner</h1>
-<p>
-  Browse and request lab equipment (laptops, cameras, Arduino boards) and manage bookings.
-</p>
+<!-- HERO SECTION -->
+<div class="hero-section">
+  <div class="hero-content">
+    <!-- Main title with material icon -->
+    <div class="hero-title">
+      <mat-icon class="hero-icon">science</mat-icon>
+      <h1>ATU Lab Equipment Loaner</h1>
+    </div>
 
-<ul>
-  <li><a routerLink="/equipment">View Equipment</a></li>
-  <li><a routerLink="/users">Manage Users</a></li>
-</ul>
+    <!-- Tagline -->
+    <p class="hero-subtitle">
+      Browse, book, and manage equipment with ease.
+    </p>
 
+    <!-- Call-to-action buttons for equipment and user management -->
+    <div class="hero-actions">
+      <button
+        mat-raised-button
+        color="primary"
+        routerLink="/equipment"
+        class="hero-button">
+        <mat-icon>search</mat-icon>
+        Browse Equipment
+      </button>
+      <button
+        mat-stroked-button
+        color="primary"
+        routerLink="/users"
+        class="hero-button">
+        <mat-icon>people</mat-icon>
+        Manage Users
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- STATISTICS SECTION -->
+<div class="stats-section">
+  <div class="stats-grid">
+    <!-- Stat card for each metric -->
+    <div class="stat-card" *ngFor="let stat of stats">
+      <mat-icon class="stat-icon">{{ stat.icon }}</mat-icon>
+      <div class="stat-content">
+        <div class="stat-value">{{ stat.value }}</div>
+        <div class="stat-label">{{ stat.label }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES SECTION -->
+<div class="features-section">
+  <h2 class="section-title">Key Features</h2>
+
+  <!-- Feature cards grid -->
+  <div class="features-grid">
+    <!-- Individual feature card -->
+    <mat-card class="feature-card" *ngFor="let feature of features">
+      <mat-card-content>
+        <!-- Feature icon -->
+        <div class="feature-icon-wrapper">
+          <mat-icon
+            class="feature-icon"
+            [color]="feature.color">
+            {{ feature.icon }}
+          </mat-icon>
+        </div>
+
+        <!-- Feature title -->
+        <h3 class="feature-title">{{ feature.title }}</h3>
+
+        <!-- Feature description -->
+        <p class="feature-description">{{ feature.description }}</p>
+
+        <!-- Action button -->
+        <button
+          mat-button
+          [color]="feature.color"
+          [routerLink]="feature.link"
+          class="feature-button">
+          Learn More
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<!-- HOW IT WORKS SECTION -->
+<!-- Step-by-step guide for using the system -->
+<div class="how-it-works-section">
+  <h2 class="section-title">How It Works</h2>
+
+  <div class="steps-container">
+    <!-- Step 1: Browse -->
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <mat-icon class="step-icon">search</mat-icon>
+      <h3 class="step-title">Browse Equipment</h3>
+      <p class="step-description">
+        Search through our catalog of lab equipment. Filter by category, status, or location.
+      </p>
+    </div>
+
+    <!-- Step 2: Book -->
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <mat-icon class="step-icon">event</mat-icon>
+      <h3 class="step-title">Request Booking</h3>
+      <p class="step-description">
+        Select your desired dates and submit a booking request. Your request will be reviewed by staff.
+      </p>
+    </div>
+
+    <!-- Step 3: Track -->
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <mat-icon class="step-icon">track_changes</mat-icon>
+      <h3 class="step-title">Track Status</h3>
+      <p class="step-description">
+        Monitor your booking status in real-time. Receive notifications when approved or rejected.
+      </p>
+    </div>
+
+    <!-- Step 4: Use -->
+    <div class="step-card">
+      <div class="step-number">4</div>
+      <mat-icon class="step-icon">check_circle</mat-icon>
+      <h3 class="step-title">Use & Return</h3>
+      <p class="step-description">
+        Pick up your equipment on the scheduled date. Return it on time to maintain your good standing.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER SECTION -->
+<div class="footer-section">
+  <p class="footer-text">
+    <mat-icon class="footer-icon">copyright</mat-icon>
+    2025 ATU Lab Equipment Loaner. All rights reserved.
+  </p>
+</div>

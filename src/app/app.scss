@@ -1,3 +1,26 @@
-.main-container {
-  padding: 16px;
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
+
+.app-title {
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.nav-links a {
+  font-size: 0.95rem;
+  text-transform: none;
+}
+
+.active-link {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+

@@ -63,26 +63,32 @@ export class UserService {
     );
   }
 
-  // ========== ERROR HANDLING ==========
+// ================== ERROR HANDLING ==========================
 
   /**
-   * Handle API errors
-   *
-   * Logs error details and passes the full error to the component
-   * so it can show specific validation messages to the user
+   * Handles HTTP errors and returns user-friendly messages
+   * Logs errors to console for debugging
    */
-  private handleError = (error: HttpErrorResponse): Observable<never> => {
-    // Log error details for debugging
-    console.error('API Error:', error);
-    console.error('Error status:', error.status);
-    console.error('Error body:', error.error);
+  private handleError(error: HttpErrorResponse) {
+    let msg = 'An unknown error occurred';
 
-    // Log network errors specifically
-    if (error.error instanceof ErrorEvent) {
-      console.error('Network error:', error.error.message);
+    if (error.status === 0 && error.error instanceof ErrorEvent) {
+      msg = `Network error: ${error.error.message}`;
+    }
+    else if (error.status === 404) {
+      msg = 'Resource not found (404)';
+    }
+    else if (error.status === 400) {
+      msg = 'Bad request (400) - check your data';
+    }
+    else if (error.status === 403) {
+      msg = 'Forbidden (403) - insufficient permission';
+    }
+    else if (error.status === 500) {
+      msg = 'Server error (500)';
     }
 
-    // Return full error so components can extract detailed messages
-    return throwError(() => error);
-  };
+    console.error('API Error:', msg, error);
+    return throwError(() => new Error(msg));
+  }
 }

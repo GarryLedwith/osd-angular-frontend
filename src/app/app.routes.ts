@@ -7,7 +7,7 @@ import { EquipmentForm } from './equipment/equipment-form/equipment-form';
 import { UsersList } from './users/users-list/users-list';
 import { UserForm } from './users/users-form/users-form';
 import { UserDetail } from './users/user-detail/user-detail';
-import { EquipmentDetailStudent } from './equipment/equipment-detail-student/equipment-detail-student';
+import { EquipmentBookingDetail } from './equipment/equipment-booking-detail/equipment-booking-detail';
 import { EquipmentBookinsList } from './equipment/equipment-bookings-list/equipment-bookings-list';
 
 // Application routes
@@ -26,7 +26,7 @@ export const routes: Routes = [
   { path: 'equipment', component: EquipmentList }, // List all equipment
   { path: 'equipment/new', component: EquipmentForm }, // Create new equipment item
   { path: 'equipment/:id/edit', component: EquipmentForm }, // Edit equipment by ID
-  { path: 'equipment/:id/bookings', component: EquipmentDetailStudent }, // Equipment detail view for students
+  { path: 'equipment/:id/bookings', component: EquipmentBookingDetail }, // Equipment detail view for students
   { path: 'equipment/bookings', component: EquipmentBookinsList }, // List all equipment bookings
 
   // Fallback route

@@ -1,0 +1,246 @@
+<!-- LOADING STATE -->
+@if (loading) {
+  <div class="loading-container">
+    <p>Loading user details...</p>
+  </div>
+}
+
+<!-- USER DETAIL CARD -->
+@if (!loading && user) {
+  <mat-card class="user-detail-card">
+
+  <!-- CARD HEADER -->
+  <mat-card-header>
+    <mat-card-title>
+      {{ user.name }}
+    </mat-card-title>
+    <mat-card-subtitle>
+      <!-- Capitalize role for display -->
+      {{ user.role | titlecase }}
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <!-- CARD CONTENT -->
+  <mat-card-content>
+
+    <!-- USER INFORMATION SECTION -->
+    <div class="user-info">
+
+      <!-- EMAIL Field -->
+      <div class="info-row">
+        <mat-icon class="info-icon">email</mat-icon>
+        <div class="info-content">
+          <span class="info-label">Email</span>
+          <span class="info-value">{{ user.email }}</span>
+        </div>
+      </div>
+
+      <!-- PHONE NUMBER Field -->
+      <div class="info-row">
+        <mat-icon class="info-icon">phone</mat-icon>
+        <div class="info-content">
+          <span class="info-label">Phone Number</span>
+          <span class="info-value">{{ user.phone || 'Not provided' }}</span>
+        </div>
+      </div>
+
+      <!-- ROLE Field -->
+      <div class="info-row">
+        <mat-icon class="info-icon">person</mat-icon>
+        <div class="info-content">
+          <span class="info-label">Role</span>
+          <span class="info-value">{{ user.role | titlecase }}</span>
+        </div>
+      </div>
+
+      <!-- DATE OF BIRTH Field -->
+      @if (user.dob) {
+        <div class="info-row">
+          <mat-icon class="info-icon">cake</mat-icon>
+          <div class="info-content">
+            <span class="info-label">Date of Birth</span>
+            <span class="info-value">{{ user.dob | date: 'longDate' }}</span>
+          </div>
+        </div>
+      }
+
+      <!-- DATE JOINED Field -->
+      @if (user.dateJoined) {
+        <div class="info-row">
+          <mat-icon class="info-icon">event</mat-icon>
+          <div class="info-content">
+            <span class="info-label">Date Joined</span>
+            <span class="info-value">{{ user.dateJoined | date: 'longDate' }}</span>
+          </div>
+        </div>
+      }
+
+      <!-- USER ID Field -->
+      <div class="info-row">
+        <mat-icon class="info-icon">fingerprint</mat-icon>
+        <div class="info-content">
+          <span class="info-label">User ID</span>
+          <span class="info-value user-id">{{ user._id }}</span>
+        </div>
+      </div>
+
+    </div>
+
+  </mat-card-content>
+
+  <!-- CARD ACTIONS -->
+  <mat-card-actions class="card-actions">
+
+    <!-- BACK Button -->
+    <button
+      mat-button
+      color="primary"
+      (click)="onBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Users
+    </button>
+
+    <!-- EDIT Button -->
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onEdit()">
+      <mat-icon>edit</mat-icon>
+      Edit User
+    </button>
+
+    <!-- DELETE Button -->
+    <button
+      mat-raised-button
+      color="warn"
+      (click)="onDelete()">
+      <mat-icon>delete</mat-icon>
+      Delete User
+    </button>
+
+  </mat-card-actions>
+
+  </mat-card>
+}
+
+<!-- ERROR STATE -->
+@if (!loading && !user) {
+  <div class="error-container">
+    <mat-card>
+      <mat-card-content>
+        <p>User not found.</p>
+        <button mat-raised-button color="primary" (click)="onBack()">
+          Back to Users
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+}
+
+<!-- Component Styles -->
+<style>
+  /* Container for loading state */
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    font-size: 16px;
+    color: #666;
+  }
+
+  /* Main card styling */
+  .user-detail-card {
+    max-width: 800px;
+    margin: 20px auto;
+  }
+
+  /* User information section styling */
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  /* Individual information row styling */
+  .info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 12px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
+
+  /* Icon styling within info rows */
+  .info-icon {
+    color: #666;
+    margin-top: 2px;
+  }
+
+  /* Content area within info rows */
+  .info-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 4px;
+  }
+
+  /* Label styling (field names) */
+  .info-label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  /* Value styling (field data) */
+  .info-value {
+    font-size: 16px;
+    color: #333;
+  }
+
+  /* Special styling for user ID (monospace font) */
+  .user-id {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    color: #666;
+  }
+
+  /* Card actions button container */
+  .card-actions {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* Ensure buttons have icons aligned */
+  .card-actions button mat-icon {
+    margin-right: 8px;
+  }
+
+  /* Error state container */
+  .error-container {
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+  }
+
+  /* Responsive design for smaller screens */
+  @media (max-width: 600px) {
+    .user-detail-card {
+      margin: 10px;
+    }
+
+    .card-actions {
+      flex-direction: column;
+    }
+
+    .card-actions button {
+      width: 100%;
+    }
+  }
+</style>

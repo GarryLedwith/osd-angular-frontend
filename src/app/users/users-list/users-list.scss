@@ -1,0 +1,444 @@
+// TODO: will extract common styles to global SCSS later
+// PAGE HEADER SECTION
+.page-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 60px 20px 40px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 32px;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+
+  h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+}
+
+.header-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+}
+
+.header-subtitle {
+  margin: 0;
+  font-size: 1.125rem;
+  opacity: 0.95;
+  line-height: 1.6;
+  max-width: 800px;
+}
+
+// FILTER SECTION
+.filter-section {
+  max-width: 1200px;
+  margin: 0 auto 32px auto;
+  padding: 0 20px;
+}
+
+.filter-form {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.filter-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.filter-field {
+  width: 100%;
+
+  // Icon prefix styling
+  mat-icon[matPrefix] {
+    color: #667eea;
+    margin-right: 8px;
+  }
+}
+
+.search-field {
+  grid-column: span 1;
+
+  @media (min-width: 768px) {
+    grid-column: span 2;
+  }
+}
+
+.filter-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.action-button {
+  mat-icon {
+    margin-right: 6px;
+  }
+}
+
+// TABLE CONTAINER
+.table-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  overflow-x: auto;
+}
+
+// USERS TABLE
+.users-table {
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+
+  // Header row styling
+  .mat-mdc-header-row {
+    background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+  }
+
+  .mat-mdc-header-cell {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #667eea;
+    padding: 16px 12px;
+  }
+
+  // Header cell with icon
+  .header-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .column-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #667eea;
+  }
+
+  // Data row styling
+  .mat-mdc-row {
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+  }
+
+  .mat-mdc-cell {
+    padding: 16px 12px;
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  // Alternate row background
+  .table-row:nth-child(even) {
+    background-color: #fafafa;
+  }
+}
+
+// NAME BUTTON
+.name-button {
+  font-weight: 500;
+  text-align: left;
+  padding: 4px 8px;
+}
+
+// ROLE BADGE
+// Color-coded role indicators
+.role-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+// Role color variants
+.role-student {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.role-staff {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.role-admin {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+// ACTIONS COLUMN
+.actions-header {
+  text-align: center;
+}
+
+.actions-cell {
+  text-align: center;
+  white-space: nowrap;
+
+  button {
+    margin: 0 2px;
+  }
+}
+
+// EMPTY STATE
+.empty-row {
+  height: 300px;
+
+  td {
+    border-bottom: none;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 80px;
+  width: 80px;
+  height: 80px;
+  color: #ccc;
+  margin-bottom: 16px;
+}
+
+.empty-message {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #666;
+  margin: 0 0 8px 0;
+}
+
+.empty-hint {
+  font-size: 0.875rem;
+  color: #999;
+  margin: 0;
+}
+
+// LOADING STATE
+.loading-row {
+  height: 200px;
+
+  td {
+    border-bottom: none;
+  }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.loading-icon {
+  font-size: 60px;
+  width: 60px;
+  height: 60px;
+  color: #667eea;
+  margin-bottom: 16px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-message {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+}
+
+// Pulse animation for loading icon
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// RESULTS SUMMARY
+.results-summary {
+  max-width: 1200px;
+  margin: 20px auto 40px auto;
+  padding: 0 20px;
+
+  p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .summary-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #667eea;
+  }
+
+  strong {
+    color: #333;
+  }
+}
+
+// RESPONSIVE DESIGN
+// Tablet breakpoint
+@media (max-width: 768px) {
+  .header-title {
+    h1 {
+      font-size: 2rem;
+    }
+  }
+
+  .header-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .header-subtitle {
+    font-size: 1rem;
+  }
+
+  .filter-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .search-field {
+    grid-column: span 1;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+
+    .action-button {
+      width: 100%;
+    }
+  }
+
+  .users-table {
+    .mat-mdc-header-cell,
+    .mat-mdc-cell {
+      padding: 12px 8px;
+      font-size: 0.8125rem;
+    }
+
+    .header-cell {
+      flex-direction: column;
+      gap: 4px;
+      text-align: center;
+    }
+
+    .column-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+// Mobile breakpoint (mobile first design)
+@media (max-width: 480px) {
+  .page-header {
+    padding: 40px 16px 30px 16px;
+  }
+
+  .header-title {
+    h1 {
+      font-size: 1.75rem;
+    }
+  }
+
+  .filter-section {
+    padding: 0 16px;
+  }
+
+  .filter-form {
+    padding: 16px;
+  }
+
+  .table-container {
+    padding: 0 16px;
+  }
+
+  .users-table {
+    font-size: 0.75rem;
+
+    .mat-mdc-header-cell,
+    .mat-mdc-cell {
+      padding: 8px 4px;
+    }
+
+    .name-button {
+      font-size: 0.8125rem;
+    }
+  }
+
+  .actions-cell {
+    button {
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  .empty-icon {
+    font-size: 60px;
+    width: 60px;
+    height: 60px;
+  }
+
+  .empty-message {
+    font-size: 1rem;
+  }
+}
+
+// Print styles
+@media print {
+  .page-header,
+  .filter-section,
+  .actions-cell,
+  .results-summary {
+    display: none;
+  }
+
+  .users-table {
+    box-shadow: none;
+  }
+}

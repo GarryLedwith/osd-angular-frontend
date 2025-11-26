@@ -1,1 +1,233 @@
-<p>users-list works!</p>
+<!-- PAGE HEADER SECTION -->
+<div class="page-header">
+  <div class="header-content">
+    <div class="header-title">
+      <mat-icon class="header-icon">people</mat-icon>
+      <h1>User Management</h1>
+    </div>
+    <p class="header-subtitle">
+      Browse and manage system users. Filter by role or search for specific users.
+    </p>
+  </div>
+</div>
+
+<!-- FILTER BAR SECTION -->
+<div class="filter-section">
+  <form
+    class="filter-form"
+    [formGroup]="filterForm"
+    (ngSubmit)="onFilterSubmit()"
+  >
+    <!-- Filter controls container -->
+    <div class="filter-controls">
+      <!-- ROLE FILTER -->
+      <!-- Dropdown for filtering by user role -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Role</mat-label>
+        <mat-icon matPrefix>badge</mat-icon>
+        <mat-select formControlName="role">
+          <mat-option value="">All Roles</mat-option>
+          <mat-option value="student">Student</mat-option>
+          <mat-option value="staff">Staff</mat-option>
+          <mat-option value="admin">Admin</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- SEARCH FILTER -->
+      <!-- Text input for general search across user fields -->
+      <mat-form-field appearance="outline" class="filter-field search-field">
+        <mat-label>Search</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          placeholder="Search by name or email..."
+          formControlName="q"
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Action buttons container -->
+    <div class="filter-actions">
+      <!-- APPLY FILTERS Button -->
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="action-button">
+        <mat-icon>filter_list</mat-icon>
+        Apply Filters
+      </button>
+
+      <!-- REFRESH Button -->
+      <button
+        mat-stroked-button
+        color="primary"
+        type="button"
+        class="action-button"
+        (click)="onRefresh()">
+        <mat-icon>refresh</mat-icon>
+        Refresh
+      </button>
+
+      <!-- ADD NEW Button -->
+      <button
+        mat-raised-button
+        color="accent"
+        type="button"
+        class="action-button"
+        routerLink="/users/new">
+        <mat-icon>person_add</mat-icon>
+        Add User
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- USERS TABLE SECTION -->
+<!-- Material table displaying user data with action buttons -->
+<div class="table-container">
+  <table
+    mat-table
+    [dataSource]="users"
+    class="users-table mat-elevation-z2"
+  >
+    <!-- NAME Column -->
+    <!-- Clickable user name that navigates to detail view -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header-cell">
+          <mat-icon class="column-icon">person</mat-icon>
+          Name
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let item">
+        <button
+          mat-button
+          color="primary"
+          class="name-button"
+          (click)="onView(item)">
+          {{ item.name }}
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- EMAIL Column -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header-cell">
+          <mat-icon class="column-icon">email</mat-icon>
+          Email
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let item">
+        {{ item.email }}
+      </td>
+    </ng-container>
+
+    <!-- ROLE Column -->
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header-cell">
+          <mat-icon class="column-icon">badge</mat-icon>
+          Role
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let item">
+        <span
+          class="role-badge"
+          [ngClass]="'role-' + item.role">
+          {{ item.role }}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- DATE JOINED Column -->
+    <ng-container matColumnDef="dateJoined">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header-cell">
+          <mat-icon class="column-icon">calendar_today</mat-icon>
+          Joined
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let item">
+        {{ item.dateJoined | date: 'shortDate' }}
+      </td>
+    </ng-container>
+
+    <!-- ACTIONS Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef class="actions-header">
+        <div class="header-cell">
+          <mat-icon class="column-icon">settings</mat-icon>
+          Actions
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let item" class="actions-cell">
+        <!-- View Button: Opens user detail page -->
+        <button
+          mat-icon-button
+          color="accent"
+          matTooltip="View Details"
+          (click)="onView(item)">
+          <mat-icon>visibility</mat-icon>
+        </button>
+
+        <!-- Edit Button: Opens user form in edit mode -->
+        <button
+          mat-icon-button
+          color="primary"
+          matTooltip="Edit User"
+          (click)="onEdit(item)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <!-- Delete Button: Shows confirmation then deletes user -->
+        <button
+          mat-icon-button
+          color="warn"
+          matTooltip="Delete User"
+          (click)="onDelete(item)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- TABLE STRUCTURE -->
+    <!-- Header row definition using column names from component -->
+    <tr mat-header-row *matHeaderRowDef="cols"></tr>
+    <!-- Data row definition - repeated for each user item -->
+    <tr mat-row *matRowDef="let row; columns: cols;" class="table-row"></tr>
+
+    <!-- EMPTY STATE -->
+    <!-- Displayed when no users match current filters or database is empty -->
+    <tr class="empty-row" *ngIf="!loading && (!users || users.length === 0)">
+      <td [attr.colspan]="cols.length">
+        <div class="empty-state">
+          <mat-icon class="empty-icon">people_outline</mat-icon>
+          <p class="empty-message">No users found</p>
+          <p class="empty-hint">Try adjusting your filters or add new users</p>
+        </div>
+      </td>
+    </tr>
+
+    <!-- LOADING STATE -->
+    <!-- Displayed while fetching user data from backend -->
+    <tr class="loading-row" *ngIf="loading">
+      <td [attr.colspan]="cols.length">
+        <div class="loading-state">
+          <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+          <p class="loading-message">Loading users...</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<!-- RESULTS SUMMARY -->
+<!-- Shows count of displayed users -->
+<div class="results-summary" *ngIf="!loading && users.length > 0">
+  <p>
+    <mat-icon class="summary-icon">group</mat-icon>
+    Showing <strong>{{ users.length }}</strong> {{ users.length === 1 ? 'user' : 'users' }}
+  </p>
+</div>

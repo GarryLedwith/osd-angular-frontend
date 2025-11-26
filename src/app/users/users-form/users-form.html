@@ -1,0 +1,153 @@
+<!-- PAGE HEADER SECTION -->
+<div class="page-header">
+  <div class="header-content">
+    <div class="header-title">
+      <mat-icon class="header-icon">{{ editingUser ? 'edit' : 'person_add' }}</mat-icon>
+      <h1>{{ editingUser ? 'Edit User' : 'Create User' }}</h1>
+    </div>
+    <p class="header-subtitle">
+      {{ editingUser ? 'Update user information and account settings.' : 'Add a new user to the system.' }}
+    </p>
+  </div>
+</div>
+
+<!-- FORM SECTION -->
+<div class="form-section">
+  <mat-card class="form-card">
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <!-- BASIC INFORMATION Section -->
+        <div class="section-title">
+          <mat-icon class="section-icon">info</mat-icon>
+          <h2>Basic Information</h2>
+        </div>
+
+        <div class="form-grid">
+          <!-- NAME Field -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Full Name</mat-label>
+            <mat-icon matPrefix>person</mat-icon>
+            <input
+              matInput
+              formControlName="name"
+              placeholder="e.g., John Doe"
+            />
+            <mat-error *ngIf="form.controls.name.invalid && form.controls.name.touched">
+              Name is required.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- EMAIL Field -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Email Address</mat-label>
+            <mat-icon matPrefix>email</mat-icon>
+            <input
+              matInput
+              type="email"
+              formControlName="email"
+              placeholder="e.g., john.doe@example.com"
+            />
+            <mat-error *ngIf="form.controls.email.hasError('required') && form.controls.email.touched">
+              Email is required.
+            </mat-error>
+            <mat-error *ngIf="form.controls.email.hasError('email') && form.controls.email.touched">
+              Invalid email format.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- PHONE NUMBER Field -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Phone Number</mat-label>
+            <mat-icon matPrefix>phone</mat-icon>
+            <input
+              matInput
+              formControlName="phone"
+              placeholder="e.g., +1 234 567 8900"
+            />
+            <mat-error *ngIf="form.controls.phone.invalid && form.controls.phone.touched">
+              Phone number is required.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- DATE OF BIRTH Field -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Date of Birth</mat-label>
+            <mat-icon matPrefix>cake</mat-icon>
+            <input
+              matInput
+              type="date"
+              formControlName="dob"
+            />
+          </mat-form-field>
+        </div>
+
+        <!-- ROLE & PERMISSIONS Section -->
+        <div class="section-title">
+          <mat-icon class="section-icon">admin_panel_settings</mat-icon>
+          <h2>Role & Permissions</h2>
+        </div>
+
+        <!-- ROLE Field -->
+        <mat-form-field appearance="outline" class="form-field role-field">
+          <mat-label>User Role</mat-label>
+          <mat-icon matPrefix>badge</mat-icon>
+          <mat-select formControlName="role">
+            <mat-option value="student">
+              <span class="role-option">
+                <mat-icon class="role-icon student">school</mat-icon>
+                Student
+              </span>
+            </mat-option>
+            <mat-option value="staff">
+              <span class="role-option">
+                <mat-icon class="role-icon staff">work</mat-icon>
+                Staff
+              </span>
+            </mat-option>
+            <mat-option value="admin">
+              <span class="role-option">
+                <mat-icon class="role-icon admin">shield</mat-icon>
+                Admin
+              </span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- ACTION BUTTONS -->
+        <div class="form-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            class="action-button"
+            [disabled]="form.invalid">
+            <mat-icon>{{ editingUser ? 'save' : 'person_add' }}</mat-icon>
+            {{ editingUser ? 'Update User' : 'Create User' }}
+          </button>
+
+          <button
+            mat-stroked-button
+            color="primary"
+            type="button"
+            class="action-button"
+            (click)="onReset()">
+            <mat-icon>refresh</mat-icon>
+            Reset Form
+          </button>
+
+          <button
+            mat-button
+            color="warn"
+            type="button"
+            class="action-button"
+            (click)="onCancel()">
+            <mat-icon>close</mat-icon>
+            Cancel
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

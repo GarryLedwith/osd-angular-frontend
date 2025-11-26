@@ -1,18 +1,43 @@
-export type EquipmentCondition = 'New' | 'Good' | 'Fair' | 'Poor';
-export type EquipmentStatus = 'available' | 'reserved' | 'out';
+export type EquipmentStatus =
+  | 'available'
+  | 'unavailable'
+  | 'maintenance';
 
-export interface Equipment {
-  _id?: string | null;
-  name: string | null;
-  category: string | null;
-  serial: string | null;
-  condition: EquipmentCondition | null;
-  status: EquipmentStatus | null;
-  location: string | null;
-  //bookings: Booking[];
-  createdAt?: Date | null;
-  updatedAt?: Date | null;
+export type BookingStatus =
+  | 'pending'
+  | 'approved'
+  | 'denied'
+  | 'checked_out'
+  | 'returned';
+
+
+  // Equipment interface
+  export interface Equipment {
+  _id: string;
+  name: string;
+  category: string;           
+  description?: string;
+  status: EquipmentStatus;
+  location?: string;
+  model?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+
+  bookings?: Booking[];         
 }
+// Booking interface (nested within Equipment)
+export interface Booking {
+  _id?: string;
+  userId: string;             
+  startDate: Date;
+  endDate: Date;
+  status: BookingStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+
+
 
 
 

@@ -1,0 +1,198 @@
+<!-- PAGE HEADER SECTION -->
+<div class="page-header">
+  <div class="header-content">
+    <div class="header-title">
+      <mat-icon class="header-icon">event_note</mat-icon>
+      <h1>Active Bookings</h1>
+    </div>
+    <p class="header-subtitle">
+      View and manage all active equipment bookings
+    </p>
+  </div>
+</div>
+
+<!-- MAIN CONTENT SECTION -->
+<div class="content-section">
+
+  <!-- FILTER SECTION -->
+  <mat-card class="filter-card">
+    <mat-card-content>
+      <div class="filter-row">
+        <mat-form-field appearance="outline" class="status-filter">
+          <mat-label>Filter by Status</mat-label>
+          <mat-select [(value)]="selectedStatus" (selectionChange)="applyFilter()">
+            <mat-option value="">All Active Bookings</mat-option>
+            <mat-option *ngFor="let status of statusOptions" [value]="status">
+              {{ status | titlecase }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>filter_list</mat-icon>
+        </mat-form-field>
+
+        <div class="booking-count">
+          <mat-icon>info</mat-icon>
+          <span>Showing {{ filteredBookings.length }} of {{ allBookings.length }} active bookings</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- LOADING STATE -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+    <p>Loading bookings...</p>
+  </div>
+
+  <!-- BOOKINGS TABLE -->
+  <mat-card *ngIf="!loading" class="table-card">
+    <mat-card-content>
+      <table
+        mat-table
+        [dataSource]="filteredBookings"
+        class="bookings-table mat-elevation-z2"
+      >
+        <!-- EQUIPMENT NAME Column -->
+        <ng-container matColumnDef="equipmentName">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header-cell">
+              <mat-icon class="column-icon">inventory_2</mat-icon>
+              Equipment
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let booking">
+            <div class="equipment-cell">
+              <strong>{{ booking.equipmentName }}</strong>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- CATEGORY Column -->
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header-cell">
+              <mat-icon class="column-icon">category</mat-icon>
+              Category
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let booking">
+            <span class="category-badge">{{ booking.equipmentCategory }}</span>
+          </td>
+        </ng-container>
+
+        <!-- USER ID Column -->
+        <ng-container matColumnDef="userId">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header-cell">
+              <mat-icon class="column-icon">person</mat-icon>
+              User
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let booking">
+            <span class="user-id">{{ booking.userId | slice:0:8 }}...</span>
+          </td>
+        </ng-container>
+
+        <!-- DATE RANGE Column -->
+        <ng-container matColumnDef="dates">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header-cell">
+              <mat-icon class="column-icon">date_range</mat-icon>
+              Booking Period
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let booking">
+            <div class="date-range">
+              <div class="date-item">
+                <mat-icon class="date-icon">event</mat-icon>
+                {{ booking.startDate | date: 'MMM d, y' }}
+              </div>
+              <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+              <div class="date-item">
+                <mat-icon class="date-icon">event</mat-icon>
+                {{ booking.endDate | date: 'MMM d, y' }}
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- STATUS Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header-cell">
+              <mat-icon class="column-icon">info</mat-icon>
+              Status
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let booking">
+            <span
+              class="status-badge"
+              [ngClass]="getStatusClass(booking.status)">
+              <mat-icon class="status-icon">
+                @switch (booking.status) {
+                  @case ('pending') { schedule }
+                  @case ('approved') { check_circle }
+                  @case ('denied') { cancel }
+                  @case ('checked_out') { output }
+                  @case ('returned') { input }
+                }
+              </mat-icon>
+              {{ booking.status | titlecase }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- CREATED AT Column -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header-cell">
+              <mat-icon class="column-icon">schedule</mat-icon>
+              Requested
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let booking">
+            {{ booking.createdAt | date: 'short' }}
+          </td>
+        </ng-container>
+
+        <!-- ACTIONS Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header-cell">Actions</div>
+          </th>
+          <td mat-cell *matCellDef="let booking">
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="viewEquipment(booking.equipmentId)"
+              matTooltip="View Equipment Details"
+              class="action-button">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Table Structure -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+
+        <!-- EMPTY STATE -->
+        <tr class="empty-row" *ngIf="!loading && filteredBookings.length === 0">
+          <td [attr.colspan]="displayedColumns.length">
+            <div class="empty-state">
+              <mat-icon class="empty-icon">event_busy</mat-icon>
+              <p class="empty-message">No active bookings found</p>
+              <p class="empty-hint">
+                @if (selectedStatus) {
+                  No bookings with status "{{ selectedStatus }}"
+                } @else {
+                  There are currently no active bookings in the system
+                }
+              </p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+</div>

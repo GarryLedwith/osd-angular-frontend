@@ -1,1 +1,255 @@
-<
+<!-- Equipment List Component Template -->
+
+<!-- PAGE HEADER SECTION -->
+<div class="page-header">
+  <div class="header-content">
+    <div class="header-title">
+      <mat-icon class="header-icon">inventory_2</mat-icon>
+      <h1>Equipment Catalog</h1>
+    </div>
+    <p class="header-subtitle">
+      Browse and manage lab equipment. Filter by category, status, or search for specific items.
+    </p>
+  </div>
+</div>
+
+<!-- FILTER BAR SECTION -->
+<!-- Reactive form for filtering equipment with real-time updates -->
+<div class="filter-section">
+  <form
+    class="filter-form"
+    [formGroup]="filterForm"
+    (ngSubmit)="onFilterSubmit()"
+  >
+    <!-- Filter controls container -->
+    <div class="filter-controls">
+      <!-- CATEGORY FILTER -->
+      <!-- Text input for filtering by equipment category -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Category</mat-label>
+        <mat-icon matPrefix>category</mat-icon>
+        <input
+          matInput
+          placeholder="e.g., Camera, Laptop"
+          formControlName="category"
+        />
+      </mat-form-field>
+
+      <!-- STATUS FILTER -->
+      <!-- Dropdown for filtering by equipment status -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Status</mat-label>
+        <mat-icon matPrefix>check_circle</mat-icon>
+        <mat-select formControlName="status">
+          <mat-option value="">All Statuses</mat-option>
+          <mat-option value="available">Available</mat-option>
+          <mat-option value="in-use">In Use</mat-option>
+          <mat-option value="maintenance">Maintenance</mat-option>
+          <mat-option value="retired">Retired</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- SEARCH FILTER -->
+      <!-- Text input for general search across equipment fields -->
+      <mat-form-field appearance="outline" class="filter-field search-field">
+        <mat-label>Search</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          placeholder="Search by name, model, or location..."
+          formControlName="q"
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Action buttons container -->
+    <div class="filter-actions">
+      <!-- APPLY FILTERS Button -->
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="action-button">
+        <mat-icon>filter_list</mat-icon>
+        Apply Filters
+      </button>
+
+      <!-- REFRESH Button -->
+      <!-- Clears all filters and reloads full equipment list -->
+      <button
+        mat-stroked-button
+        color="primary"
+        type="button"
+        class="action-button"
+        (click)="onRefresh()">
+        <mat-icon>refresh</mat-icon>
+        Refresh
+      </button>
+
+      <!-- ADD NEW Button -->
+      <!-- Navigates to equipment creation form -->
+      <button
+        mat-raised-button
+        color="accent"
+        type="button"
+        class="action-button"
+        routerLink="/equipment/new">
+        <mat-icon>add</mat-icon>
+        Add Equipment
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- EQUIPMENT TABLE SECTION -->
+<!-- Material table displaying equipment data with action buttons -->
+<div class="table-container">
+  <table
+    mat-table
+    [dataSource]="equipment"
+    class="equipment-table mat-elevation-z2"
+  >
+    <!-- NAME Column -->
+    <!-- Clickable equipment name that navigates to bookings view -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header-cell">
+          <mat-icon class="column-icon">label</mat-icon>
+          Name
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let item">
+        <button
+          mat-button
+          color="primary"
+          class="name-button"
+          (click)="onSelect(item)">
+          {{ item.name }}
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- CATEGORY Column -->
+    <!-- Displays equipment category (e.g., Computer, Camera) -->
+    <ng-container matColumnDef="category">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header-cell">
+          <mat-icon class="column-icon">category</mat-icon>
+          Category
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let item">
+        <span class="category-badge">{{ item.category }}</span>
+      </td>
+    </ng-container>
+
+    <!-- STATUS Column -->
+    <!-- Displays equipment status with color-coded badge -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header-cell">
+          <mat-icon class="column-icon">info</mat-icon>
+          Status
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let item">
+        <span
+          class="status-badge"
+          [ngClass]="'status-' + item.status">
+          {{ item.status }}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- LOCATION Column -->
+    <!-- Displays physical location of equipment -->
+    <ng-container matColumnDef="location">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header-cell">
+          <mat-icon class="column-icon">place</mat-icon>
+          Location
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let item">
+        {{ item.location || 'Not specified' }}
+      </td>
+    </ng-container>
+
+    <!-- ACTIONS Column -->
+    <!-- Edit and delete action buttons for each equipment item -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef class="actions-header">
+        <div class="header-cell">
+          <mat-icon class="column-icon">settings</mat-icon>
+          Actions
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let item" class="actions-cell">
+        <!-- Edit Button: Opens equipment form in edit mode -->
+        <button
+          mat-icon-button
+          color="primary"
+          matTooltip="Edit Equipment"
+          (click)="onEdit(item)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <!-- Delete Button: Shows confirmation then deletes equipment -->
+        <button
+          mat-icon-button
+          color="warn"
+          matTooltip="Delete Equipment"
+          (click)="onDelete(item)">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+        <!-- View Bookings Button: Shows booking history for this equipment -->
+        <button
+          mat-icon-button
+          color="accent"
+          matTooltip="View Bookings"
+          (click)="onSelect(item)">
+          <mat-icon>event</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- TABLE STRUCTURE -->
+    <!-- Header row definition using column names from component -->
+    <tr mat-header-row *matHeaderRowDef="cols"></tr>
+    <!-- Data row definition - repeated for each equipment item -->
+    <tr mat-row *matRowDef="let row; columns: cols;" class="table-row"></tr>
+
+    <!-- EMPTY STATE -->
+    <!-- Displayed when no equipment matches current filters or database is empty -->
+    <tr class="empty-row" *ngIf="!loading && (!equipment || equipment.length === 0)">
+      <td [attr.colspan]="cols.length">
+        <div class="empty-state">
+          <mat-icon class="empty-icon">inventory_2</mat-icon>
+          <p class="empty-message">No equipment found</p>
+          <p class="empty-hint">Try adjusting your filters or add new equipment</p>
+        </div>
+      </td>
+    </tr>
+
+    <!-- LOADING STATE -->
+    <!-- Displayed while fetching equipment data from backend -->
+    <tr class="loading-row" *ngIf="loading">
+      <td [attr.colspan]="cols.length">
+        <div class="loading-state">
+          <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+          <p class="loading-message">Loading equipment...</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<!-- RESULTS SUMMARY -->
+<!-- Shows count of displayed equipment items -->
+<div class="results-summary" *ngIf="!loading && equipment.length > 0">
+  <p>
+    <mat-icon class="summary-icon">inventory</mat-icon>
+    Showing <strong>{{ equipment.length }}</strong> {{ equipment.length === 1 ? 'item' : 'items' }}
+  </p>
+</div>

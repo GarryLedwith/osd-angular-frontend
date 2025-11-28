@@ -34,13 +34,11 @@ export class EquipmentService {
   getEquipmentList(options?: {
     category?: string;
     status?: string;
-    q?: string;
   }): Observable<Equipment[]> {
     let params = new HttpParams();
     if (options?.category) params = params.set('category', options.category);
     if (options?.status) params = params.set('status', options.status);
-    if (options?.q) params = params.set('q', options.q);
-
+  
     return this.http.get<Equipment[]>(this.baseUrl, { params })
       .pipe(catchError(this.handleError));
   }

@@ -60,8 +60,7 @@ export class EquipmentList implements OnInit {
   constructor() {
     this.filterForm = this.fb.group({
       category: [''],
-      status: [''],
-      q: ['']
+      status: ['']
     });
 
     // Reload list whenever user changes a filter

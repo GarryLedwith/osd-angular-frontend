@@ -1,0 +1,89 @@
+<mat-card class="booking-card">
+  <!-- Card Header -->
+  <mat-card-header class="booking-header">
+    <div class="header-content">
+      <div class="header-title">
+        <mat-icon class="header-icon">event_available</mat-icon>
+        <mat-card-title>Request Booking</mat-card-title>
+      </div>
+      <mat-card-subtitle class="equipment-name">
+        <mat-icon class="equipment-icon">inventory_2</mat-icon>
+        {{ equipmentName || 'Equipment' }}
+      </mat-card-subtitle>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content>
+    <!-- Reactive Form -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <!-- Date Selection Section -->
+      <div class="section-title">
+        <mat-icon class="section-icon">date_range</mat-icon>
+        <h3>Select Dates</h3>
+      </div>
+
+      <div class="date-fields">
+        <!-- START DATE Field -->
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>Start Date</mat-label>
+          <mat-icon matPrefix>today</mat-icon>
+          <input
+            matInput
+            [matDatepicker]="startPicker"
+            formControlName="startDate"
+            placeholder="Select start date"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+          <mat-error *ngIf="form.controls.startDate.invalid && form.controls.startDate.touched">
+            Start date is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- END DATE Field -->
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>End Date</mat-label>
+          <mat-icon matPrefix>event</mat-icon>
+          <input
+            matInput
+            [matDatepicker]="endPicker"
+            formControlName="endDate"
+            placeholder="Select end date"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+          <mat-error *ngIf="form.controls.endDate.invalid && form.controls.endDate.touched">
+            End date is required
+          </mat-error>
+          <mat-error *ngIf="form.controls.endDate.hasError('range')">
+            End date must be after start date
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Booking Info Notice -->
+      <div class="booking-notice">
+        <mat-icon class="notice-icon">info</mat-icon>
+        <p class="notice-text">
+          Your booking request will be reviewed by staff. You'll be notified once it's approved or rejected.
+        </p>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="submit-button"
+          [disabled]="form.invalid"
+        >
+          <mat-icon>send</mat-icon>
+          Request Booking
+        </button>
+      </div>
+
+    </form>
+  </mat-card-content>
+</mat-card>

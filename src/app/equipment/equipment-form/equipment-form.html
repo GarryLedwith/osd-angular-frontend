@@ -16,7 +16,7 @@
 <div class="form-section">
   <mat-card class="form-card">
     <mat-card-content>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <form [formGroup]="form" (submit)="onSubmit()">
 
         <!-- BASIC INFORMATION Section -->
         <div class="section-title">
@@ -34,9 +34,11 @@
               formControlName="name"
               placeholder="e.g., MacBook Pro, 3D Printer"
             />
-            <mat-error *ngIf="form.controls.name.invalid && form.controls.name.touched">
-              Name is required.
-            </mat-error>
+            @if (form.controls.name.invalid && form.controls.name.touched) {
+              <mat-error>
+                Name is required.
+              </mat-error>
+            }
           </mat-form-field>
 
           <!-- CATEGORY Field -->
@@ -48,9 +50,11 @@
               formControlName="category"
               placeholder="e.g., Computer, Camera"
             />
-            <mat-error *ngIf="form.controls.category.invalid && form.controls.category.touched">
-              Category is required.
-            </mat-error>
+            @if (form.controls.category.invalid && form.controls.category.touched) {
+              <mat-error>
+                Category is required.
+              </mat-error>
+            }
           </mat-form-field>
 
           <!-- MODEL Field -->
@@ -142,16 +146,17 @@
             Reset Form
           </button>
 
-          <button
-            *ngIf="editingEquipment"
-            mat-button
-            color="warn"
-            type="button"
-            class="action-button"
-            (click)="cancel.emit()">
-            <mat-icon>close</mat-icon>
-            Cancel Edit
-          </button>
+          @if (editingEquipment) {
+            <button
+              mat-button
+              color="warn"
+              type="button"
+              class="action-button"
+              (click)="cancel.emit()">
+              <mat-icon>close</mat-icon>
+              Cancel Edit
+            </button>
+          }
         </div>
 
       </form>

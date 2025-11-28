@@ -1,0 +1,203 @@
+// Equipment Booking Form Component Styles
+// Modern styling matching the equipment-form design
+
+// BOOKING CARD
+// Main card container with modern styling
+.booking-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+
+  mat-card-content {
+    padding: 24px;
+  }
+}
+
+// HEADER SECTION
+// Custom header styling with icons
+.booking-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px 24px;
+  border-radius: 12px 12px 0 0;
+  margin: -16px -16px 0 -16px;
+
+  .header-content {
+    width: 100%;
+  }
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+
+    mat-card-title {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  .header-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: white;
+  }
+
+  mat-card-subtitle {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .equipment-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .equipment-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: rgba(255, 255, 255, 0.9);
+  }
+}
+
+// SECTION TITLE
+// Heading within the form
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e0e0e0;
+
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .section-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #667eea;
+  }
+}
+
+// DATE FIELDS
+// Container for date input fields
+.date-fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.date-field {
+  width: 100%;
+
+  // Icon prefix styling
+  mat-icon[matPrefix] {
+    color: #667eea;
+    margin-right: 8px;
+  }
+
+  // Datepicker toggle button styling
+  mat-datepicker-toggle {
+    color: #667eea;
+  }
+}
+
+// BOOKING NOTICE
+// Information banner about booking approval process
+.booking-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #e3f2fd;
+  border-left: 4px solid #1976d2;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+
+  .notice-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #1976d2;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .notice-text {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #1565c0;
+    line-height: 1.6;
+  }
+}
+
+// FORM ACTIONS
+// Button container at bottom of form
+.form-actions {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: 16px;
+  border-top: 2px solid #e0e0e0;
+
+  .submit-button {
+    mat-icon {
+      margin-right: 6px;
+    }
+  }
+}
+
+// RESPONSIVE DESIGN
+// Mobile breakpoint
+@media (max-width: 480px) {
+  .booking-card {
+    mat-card-content {
+      padding: 16px;
+    }
+  }
+
+  .booking-header {
+    padding: 16px;
+
+    .header-title {
+      mat-card-title {
+        font-size: 1.25rem;
+      }
+    }
+
+    .header-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  .section-title {
+    h3 {
+      font-size: 1.125rem;
+    }
+  }
+
+  .form-actions {
+    .submit-button {
+      width: 100%;
+    }
+  }
+}

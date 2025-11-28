@@ -22,9 +22,11 @@
           <mat-label>Filter by Status</mat-label>
           <mat-select [(value)]="selectedStatus" (selectionChange)="applyFilter()">
             <mat-option value="">All Active Bookings</mat-option>
-            <mat-option *ngFor="let status of statusOptions" [value]="status">
-              {{ status | titlecase }}
-            </mat-option>
+            @for (status of statusOptions; track status) {
+              <mat-option [value]="status">
+                {{ status | titlecase }}
+              </mat-option>
+            }
           </mat-select>
           <mat-icon matPrefix>filter_list</mat-icon>
         </mat-form-field>
@@ -38,13 +40,16 @@
   </mat-card>
 
   <!-- LOADING STATE -->
-  <div *ngIf="loading" class="loading-container">
-    <mat-icon class="loading-icon">hourglass_empty</mat-icon>
-    <p>Loading bookings...</p>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+      <p>Loading bookings...</p>
+    </div>
+  }
 
   <!-- BOOKINGS TABLE -->
-  <mat-card *ngIf="!loading" class="table-card">
+  @if (!loading) {
+    <mat-card class="table-card">
     <mat-card-content>
       <table
         mat-table
@@ -126,7 +131,7 @@
           <td mat-cell *matCellDef="let booking">
             <span
               class="status-badge"
-              [ngClass]="getStatusClass(booking.status)">
+              [class]="getStatusClass(booking.status)">
               <mat-icon class="status-icon">
                 @switch (booking.status) {
                   @case ('pending') { schedule }
@@ -176,23 +181,26 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
 
         <!-- EMPTY STATE -->
-        <tr class="empty-row" *ngIf="!loading && filteredBookings.length === 0">
-          <td [attr.colspan]="displayedColumns.length">
-            <div class="empty-state">
-              <mat-icon class="empty-icon">event_busy</mat-icon>
-              <p class="empty-message">No active bookings found</p>
-              <p class="empty-hint">
-                @if (selectedStatus) {
-                  No bookings with status "{{ selectedStatus }}"
-                } @else {
-                  There are currently no active bookings in the system
-                }
-              </p>
-            </div>
-          </td>
-        </tr>
+        @if (!loading && filteredBookings.length === 0) {
+          <tr class="empty-row">
+            <td [attr.colspan]="displayedColumns.length">
+              <div class="empty-state">
+                <mat-icon class="empty-icon">event_busy</mat-icon>
+                <p class="empty-message">No active bookings found</p>
+                <p class="empty-hint">
+                  @if (selectedStatus) {
+                    No bookings with status "{{ selectedStatus }}"
+                  } @else {
+                    There are currently no active bookings in the system
+                  }
+                </p>
+              </div>
+            </td>
+          </tr>
+        }
       </table>
     </mat-card-content>
-  </mat-card>
+    </mat-card>
+  }
 
 </div>

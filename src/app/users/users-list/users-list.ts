@@ -69,8 +69,7 @@ export class UsersList implements OnInit {
   constructor() {
     // Create filter form with two fields
     this.filterForm = this.fb.group({
-      role: [''],  // Role dropdown (empty = show all)
-      q: ['']      // Search box (empty = no filter)
+      role: ['']  // Role dropdown (empty = show all)
     });
 
     // Reload users whenever filter changes (real-time filtering)
@@ -122,26 +121,9 @@ export class UsersList implements OnInit {
       filtered = filtered.filter(user => user.role === role);
     }
 
-    // Filter by search query if user typed something
-    if (q && q.trim()) {
-      const query = q.toLowerCase().trim();
-      // Search in name and email fields
-      filtered = filtered.filter(user =>
-        user.name.toLowerCase().includes(query) ||
-        user.email.toLowerCase().includes(query)
-      );
-    }
-
     return filtered;
   }
 
-  /**
-   * Handle filter form submission
-   * (Not really needed since filters update automatically)
-   */
-  onFilterSubmit(): void {
-    this.loadUsers();
-  }
 
   /**
    * Reset filters and reload all users

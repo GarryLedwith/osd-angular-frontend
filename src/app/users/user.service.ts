@@ -66,8 +66,8 @@ export class UserService {
 // ================== ERROR HANDLING ==========================
 
   /**
-   * Handles HTTP errors and returns user-friendly messages
-   * Logs errors to console for debugging
+   * Handles HTTP errors and logs them for debugging
+   * Passes through the original error so components can extract detailed messages
    */
   private handleError(error: HttpErrorResponse) {
     let msg = 'An unknown error occurred';
@@ -89,6 +89,6 @@ export class UserService {
     }
 
     console.error('API Error:', msg, error);
-    return throwError(() => new Error(msg));
+    return throwError(() => error);
   }
 }

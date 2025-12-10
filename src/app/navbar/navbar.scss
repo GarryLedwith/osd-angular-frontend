@@ -1,7 +1,116 @@
+mat-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .spacer {
   flex: 1 1 auto;
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 600;
+  font-size: 1.25rem;
+
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+// Navigation buttons with icons
+button[mat-button] {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+  }
+
+  &.logout-button {
+    margin-left: 8px;
+  }
+}
+
+// User info display
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  margin-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 0.9rem;
+  opacity: 0.95;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// Responsive design for mobile
+@media (max-width: 768px) {
+  .logo {
+    font-size: 1rem;
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  button[mat-button] {
+    font-size: 0.875rem;
+    padding: 0 8px;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .user-info {
+    font-size: 0.8rem;
+    padding: 0 8px;
+    margin-left: 8px;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+// Mobile - hide text, show only icons
+@media (max-width: 600px) {
+  button[mat-button] {
+    min-width: 40px;
+    padding: 0 8px;
+
+    // Hide button text on small screens, keep icons
+    span:not(.mat-button-wrapper) {
+      display: none;
+    }
+  }
+
+  .user-info {
+    display: none;
+  }
 }

@@ -8,11 +8,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Login Component
  * Handles user authentication through email and password
- * Redirects to home page on successful login
+ * Redirects to previous page on successful login
  */
 @Component({
   selector: 'app-login',
@@ -38,6 +39,7 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthCustomService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
 
   constructor() {
@@ -46,6 +48,15 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]], // Email required and must be valid format
       password: ['', [Validators.required, Validators.minLength(6)]], // Password required, minimum 6 characters
     });
+  }
+
+  returnUrl: string = '';
+
+
+  
+  ngOnInit(): void {
+    // Get returnUrl from query parameters (if any)
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   /**
@@ -58,10 +69,14 @@ export class LoginComponent {
 
     // Get form values and attempt login
     const values = this.loginForm.value;
+    console.log('Logging in with', values);
+
+    
+    
     this.authService.login(values.email, values.password).subscribe({
       next: () => {
         // On success, redirect to home page
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl(this.returnUrl);
       },
       error: () => {
         // On error, show error message to user

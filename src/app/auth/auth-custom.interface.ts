@@ -1,10 +1,9 @@
-export interface AuthUser {
-  name: string;
-  email: string;
-  role: 'student' | 'staff' | 'admin';
-}
+import { User } from "../users/user.interface";
+
+
 
 export interface LoginResponse {
   accessToken: string;
-  user: AuthUser;
+  user: User;
 }
+

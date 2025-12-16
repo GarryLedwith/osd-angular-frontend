@@ -31,10 +31,19 @@
             <input
               matInput
               formControlName="name"
-              placeholder="e.g., John Doe"
+              placeholder="e.g., John O'Brien"
             />
-            <mat-error *ngIf="form.controls.name.invalid && form.controls.name.touched">
+            <mat-error *ngIf="form.controls.name.hasError('required')">
               Name is required.
+            </mat-error>
+            <mat-error *ngIf="form.controls.name.hasError('nameEmpty')">
+              Name cannot be empty.
+            </mat-error>
+            <mat-error *ngIf="form.controls.name.hasError('nameMaxLength')">
+              Name cannot exceed 50 characters.
+            </mat-error>
+            <mat-error *ngIf="form.controls.name.hasError('namePattern')">
+              Name can only contain letters, spaces, apostrophes, and hyphens.
             </mat-error>
           </mat-form-field>
 
@@ -46,13 +55,18 @@
               matInput
               type="email"
               formControlName="email"
-              placeholder="e.g., john.doe@example.com"
+              placeholder="e.g., john.doe@student.atu.ie"
             />
-            <mat-error *ngIf="form.controls.email.hasError('required') && form.controls.email.touched">
+            <mat-error *ngIf="form.controls.email.hasError('required')">
               Email is required.
             </mat-error>
-            <mat-error *ngIf="form.controls.email.hasError('email') && form.controls.email.touched">
+            <mat-error *ngIf="form.controls.email.hasError('email')">
               Invalid email format.
+            </mat-error>
+            <mat-error *ngIf="form.controls.email.hasError('emailRoleMismatch')">
+              <span *ngIf="form.controls.role.value === 'student'">Student email must end with @student.atu.ie</span>
+              <span *ngIf="form.controls.role.value === 'staff'">Staff email must end with @staff.atu.ie</span>
+              <span *ngIf="form.controls.role.value === 'admin'">Admin email must end with @admin.atu.ie</span>
             </mat-error>
           </mat-form-field>
 
@@ -63,10 +77,19 @@
             <input
               matInput
               formControlName="phone"
-              placeholder="e.g., +1 234 567 8900"
+              placeholder="e.g., 0851234567"
             />
-            <mat-error *ngIf="form.controls.phone.invalid && form.controls.phone.touched">
+            <mat-error *ngIf="form.controls.phone.hasError('required')">
               Phone number is required.
+            </mat-error>
+            <mat-error *ngIf="form.controls.phone.hasError('phoneDigitsOnly')">
+              Phone number must contain only digits.
+            </mat-error>
+            <mat-error *ngIf="form.controls.phone.hasError('phoneStartsWith08')">
+              Phone number must start with '08'.
+            </mat-error>
+            <mat-error *ngIf="form.controls.phone.hasError('phoneLength')">
+              Phone number must be exactly 10 digits long.
             </mat-error>
           </mat-form-field>
 
@@ -113,6 +136,53 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+
+        <!-- PASSWORD Section -->
+        <div class="section-title">
+          <mat-icon class="section-icon">lock</mat-icon>
+          <h2>{{ editingUser ? 'Change Password (Optional)' : 'Set Password' }}</h2>
+        </div>
+
+        <div class="form-grid">
+          <!-- PASSWORD Field -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Password</mat-label>
+            <mat-icon matPrefix>lock</mat-icon>
+            <input
+              matInput
+              type="password"
+              formControlName="password"
+              placeholder="Enter password"
+            />
+            <mat-error *ngIf="form.controls.password.hasError('required')">
+              Password is required.
+            </mat-error>
+            <mat-error *ngIf="form.controls.password.hasError('passwordMinLength')">
+              Password must be at least 8 characters long.
+            </mat-error>
+            <mat-error *ngIf="form.controls.password.hasError('passwordMaxLength')">
+              Password cannot exceed 64 characters.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- CONFIRM PASSWORD Field -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Confirm Password</mat-label>
+            <mat-icon matPrefix>lock_outline</mat-icon>
+            <input
+              matInput
+              type="password"
+              formControlName="confirmPassword"
+              placeholder="Re-enter password"
+            />
+            <mat-error *ngIf="form.controls.confirmPassword.hasError('required')">
+              Please confirm your password.
+            </mat-error>
+            <mat-error *ngIf="form.controls.confirmPassword.hasError('passwordMismatch')">
+              Passwords do not match.
+            </mat-error>
+          </mat-form-field>
+        </div>
 
         <!-- ACTION BUTTONS -->
         <div class="form-actions">

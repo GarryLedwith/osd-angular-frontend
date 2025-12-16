@@ -79,7 +79,7 @@ export class EquipmentList implements OnInit {
   /**
    * Get equipment from API with filters
    */
-  loadEquipment(filters?: { category?: string; status?: string; q?: string }): void {
+  loadEquipment(filters?: { category?: string; status?: string}): void {
     this.loading = true;
 
     this.equipmentService.getEquipmentList(filters).subscribe({
@@ -97,6 +97,7 @@ export class EquipmentList implements OnInit {
   /**
    * Clear all filters and reload list
    */
+  
   onRefresh(): void {
     this.filterForm.reset();
     this.loadEquipment();

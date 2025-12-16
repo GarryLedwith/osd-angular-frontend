@@ -9,5 +9,6 @@ export interface User {
   role?: UserRole;
   dateJoined?: Date;
   lastUpdated?: Date;
+  password?: string; // Optional: for creation/update only
 }
 

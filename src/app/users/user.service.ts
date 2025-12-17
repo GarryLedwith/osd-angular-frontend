@@ -69,6 +69,8 @@ export class UserService {
    * Handles HTTP errors and returns user-friendly messages
    * with authorisation error handling.
    * Logs errors to console for debugging
+   * Handles HTTP errors and logs them for debugging
+   * Passes through the original error so components can extract detailed messages
    */
 private handleError(error: HttpErrorResponse): Observable<never> {
   let errorMessage = 'An unknown error occurred';
@@ -82,6 +84,24 @@ private handleError(error: HttpErrorResponse): Observable<never> {
     errorMessage = 'You are not authorised for that action';
   } else if (error.error instanceof ErrorEvent) {
     errorMessage = `Network error: ${error.error.message}`;
+    if (error.status === 0 && error.error instanceof ErrorEvent) {
+      msg = `Network error: ${error.error.message}`;
+    }
+    else if (error.status === 404) {
+      msg = 'Resource not found (404)';
+    }
+    else if (error.status === 400) {
+      msg = 'Bad request (400) - check your data';
+    }
+    else if (error.status === 403) {
+      msg = 'Forbidden (403) - insufficient permission';
+    }
+    else if (error.status === 500) {
+      msg = 'Server error (500)';
+    }
+
+    console.error('API Error:', msg, error);
+    return throwError(() => error);
   }
 
   console.error('API Error:', errorMessage, error);

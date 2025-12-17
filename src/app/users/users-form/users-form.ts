@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -12,6 +12,142 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { User, UserRole } from '../../users/user.interface';
 import { UserService } from '../../users/user.service';
+
+/**
+ * Custom Validators
+ */
+
+// Irish phone number validator (must start with 08, be exactly 10 digits)
+function irishPhoneValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    if (!value) {
+      return null; 
+    }
+
+    // Must contain only digits
+    if (!/^\d+$/.test(value)) {
+      return { phoneDigitsOnly: { value, message: 'Phone number must contain only digits' } };
+    }
+
+    // Must start with 08
+    if (!value.startsWith('08')) {
+      return { phoneStartsWith08: { value, message: "Phone number must start with '08'" } };
+    }
+
+    // Must be exactly 10 digits
+    if (value.length !== 10) {
+      return { phoneLength: { value, message: 'Phone number must be exactly 10 digits long' } };
+    }
+
+    return null;
+  };
+}
+
+// Person name validator (1-50 chars, only letters, spaces, apostrophes, hyphens)
+function personNameValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    if (!value) {
+      return null; 
+    }
+
+    const trimmedValue = value.trim();
+
+    // Must not be empty after trim
+    if (trimmedValue.length === 0) {
+      return { nameEmpty: { value, message: 'Name cannot be empty' } };
+    }
+
+    // Must not exceed 50 characters
+    if (trimmedValue.length > 50) {
+      return { nameMaxLength: { value, message: 'Name cannot exceed 50 characters' } };
+    }
+
+    // Must contain only letters, spaces, apostrophes, and hyphens
+    if (!/^[a-zA-Z\s'-]+$/.test(trimmedValue)) {
+      return { namePattern: { value, message: "Name can only contain letters, spaces, apostrophes, and hyphens" } };
+    }
+
+    return null;
+  };
+}
+
+// Role-based email validator
+function roleBasedEmailValidator(getRoleValue: () => UserRole): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const email = control.value;
+    const role = getRoleValue();
+
+    if (!email) {
+      return null; 
+    }
+
+    // Check role-specific email domain
+    switch (role) {
+      case 'student':
+        if (!email.endsWith('@student.atu.ie')) {
+          return { emailRoleMismatch: { value: email, message: 'Student email must end with @student.atu.ie' } };
+        }
+        break;
+      case 'staff':
+        if (!email.endsWith('@staff.atu.ie')) {
+          return { emailRoleMismatch: { value: email, message: 'Staff email must end with @staff.atu.ie' } };
+        }
+        break;
+      case 'admin':
+        if (!email.endsWith('@admin.atu.ie')) {
+          return { emailRoleMismatch: { value: email, message: 'Admin email must end with @admin.atu.ie' } };
+        }
+        break;
+    }
+
+    return null;
+  };
+}
+
+// Password validator (8-64 characters)
+function passwordValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    if (!value) {
+      return null; // Let required validator handle empty values
+    }
+
+    // Must be at least 8 characters
+    if (value.length < 8) {
+      return { passwordMinLength: { value, message: 'Password must be at least 8 characters long' } };
+    }
+
+    // Must not exceed 64 characters
+    if (value.length > 64) {
+      return { passwordMaxLength: { value, message: 'Password cannot exceed 64 characters' } };
+    }
+
+    return null;
+  };
+}
+
+// Password confirmation validator
+function passwordMatchValidator(getPasswordValue: () => string): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const confirmPassword = control.value;
+    const password = getPasswordValue();
+
+    if (!confirmPassword) {
+      return null; // Let required validator handle empty values
+    }
+
+    if (password !== confirmPassword) {
+      return { passwordMismatch: { value: confirmPassword, message: 'Passwords do not match' } };
+    }
+
+    return null;
+  };
+}
 
 /**
  * User Form Component
@@ -54,13 +190,15 @@ export class UserForm implements OnChanges, OnInit {
   private isRouteComponent = false;  // Is this a standalone page or child component?
   private userId: string | null = null;  // User ID when editing
 
-  // Form with validation rules
+  // Form with validation rules matching backend
   form = this.fb.group({
-    name: ['', Validators.required],
+    name: ['', [Validators.required, personNameValidator()]],
     email: ['', [Validators.required, Validators.email]],
-    phone: ['', Validators.required],
+    phone: ['', [Validators.required, irishPhoneValidator()]],
     role: ['student' as UserRole, Validators.required],
-    dob: ['']
+    dob: [''],
+    password: ['', [passwordValidator()]],
+    confirmPassword: ['']
   });
 
   /**
@@ -70,6 +208,26 @@ export class UserForm implements OnChanges, OnInit {
    * If no ID, show empty form for creating new user.
    */
   ngOnInit(): void {
+    // Add role-based email validator after form is initialized
+    this.form.get('email')?.addValidators(
+      roleBasedEmailValidator(() => this.form.get('role')?.value || 'student')
+    );
+
+    // Add password match validator after form is initialized
+    this.form.get('confirmPassword')?.addValidators(
+      passwordMatchValidator(() => this.form.get('password')?.value || '')
+    );
+
+    // Re-validate email when role changes
+    this.form.get('role')?.valueChanges.subscribe(() => {
+      this.form.get('email')?.updateValueAndValidity();
+    });
+
+    // Re-validate confirmPassword when password changes
+    this.form.get('password')?.valueChanges.subscribe(() => {
+      this.form.get('confirmPassword')?.updateValueAndValidity();
+    });
+
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
@@ -88,8 +246,10 @@ export class UserForm implements OnChanges, OnInit {
           }
         });
       } else {
-        // Create mode - empty form
+        // Create mode - empty form, password is required
         this.isRouteComponent = true;
+        this.form.get('password')?.setValidators([Validators.required, passwordValidator()]);
+        this.form.get('confirmPassword')?.setValidators([Validators.required, passwordMatchValidator(() => this.form.get('password')?.value || '')]);
       }
     });
   }
@@ -104,8 +264,18 @@ export class UserForm implements OnChanges, OnInit {
     if (changes['editingUser']) {
       const user = this.editingUser;
       if (user) {
+        // Edit mode - password is optional
+        this.form.get('password')?.setValidators([passwordValidator()]);
+        this.form.get('confirmPassword')?.setValidators([passwordMatchValidator(() => this.form.get('password')?.value || '')]);
+        this.form.get('password')?.updateValueAndValidity();
+        this.form.get('confirmPassword')?.updateValueAndValidity();
         this.populateForm(user);
       } else {
+        // Create mode - password is required
+        this.form.get('password')?.setValidators([Validators.required, passwordValidator()]);
+        this.form.get('confirmPassword')?.setValidators([Validators.required, passwordMatchValidator(() => this.form.get('password')?.value || '')]);
+        this.form.get('password')?.updateValueAndValidity();
+        this.form.get('confirmPassword')?.updateValueAndValidity();
         this.onReset();
       }
     }
@@ -142,7 +312,8 @@ export class UserForm implements OnChanges, OnInit {
       email: raw.email ?? '',
       phone: raw.phone ?? '',
       role: (raw.role as UserRole) ?? 'student',
-      dob: raw.dob ? new Date(raw.dob) : undefined
+      dob: raw.dob ? new Date(raw.dob) : undefined,
+      password: raw.password || undefined // Include password if provided
     };
 
     const mode: 'create' | 'update' = this.editingUser ? 'update' : 'create';
@@ -169,6 +340,7 @@ export class UserForm implements OnChanges, OnInit {
       email: user.email,
       phone: user.phone,
       role: user.role,
+      password: user.password,
       dob: user.dob
     };
 
@@ -209,6 +381,7 @@ export class UserForm implements OnChanges, OnInit {
       email: user.email,
       phone: user.phone,
       role: user.role,
+      password: user.password,
       dob: user.dob
     };
 
@@ -247,7 +420,9 @@ export class UserForm implements OnChanges, OnInit {
       email: '',
       phone: '',
       role: 'student',
-      dob: ''
+      dob: '',
+      password: '',
+      confirmPassword: ''
     });
   }
 

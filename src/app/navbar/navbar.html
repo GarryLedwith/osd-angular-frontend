@@ -1,11 +1,49 @@
 <mat-toolbar color="primary">
-  <span class="logo">ATU Loaner</span>
+  <span class="logo">
+    <mat-icon>science</mat-icon>
+    ATU Loaner
+  </span>
 
   <span class="spacer"></span>
 
-  <button mat-button routerLink="/" routerLinkActive="active">Home</button>
-  <button mat-button routerLink="/equipment" routerLinkActive="active">Equipment</button>
-  <button mat-button routerLink="/users" routerLinkActive="active">Users</button>
-  <button mat-button routerLink="/equipment/bookings" routerLinkActive="active">Bookings</button>
+  <!-- Navigation Links - Always Visible -->
+  <button mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <mat-icon>home</mat-icon>
+    Home
+  </button>
+
+  <!-- Authenticated User Navigation -->
+  @if (isAuthenticated$ | async) {
+    <button mat-button routerLink="/equipment" routerLinkActive="active">
+      <mat-icon>devices</mat-icon>
+      Equipment
+    </button>
+    <button mat-button routerLink="/users" routerLinkActive="active">
+      <mat-icon>people</mat-icon>
+      Users
+    </button>
+    <button mat-button routerLink="/equipment/bookings" routerLinkActive="active">
+      <mat-icon>event</mat-icon>
+      Bookings
+    </button>
+
+    <!-- User Info and Logout -->
+    <span class="user-info">
+      <mat-icon>account_circle</mat-icon>
+      {{ (currentUser$ | async)?.name || (currentUser$ | async)?.email }}
+    </span>
+    <button mat-button (click)="logout()" class="logout-button">
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
+  }
+
+  <!-- Guest Navigation -->
+  @if (!(isAuthenticated$ | async)) {
+    <button mat-button routerLink="/login" routerLinkActive="active">
+      <mat-icon>login</mat-icon>
+      Login
+    </button>
+  }
 </mat-toolbar>
 

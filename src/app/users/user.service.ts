@@ -74,6 +74,7 @@ export class UserService {
    */
 private handleError(error: HttpErrorResponse): Observable<never> {
   let errorMessage = 'An unknown error occurred';
+  let msg = '';
 
   if (error.status === 404) {
     errorMessage = 'Not found (404)';

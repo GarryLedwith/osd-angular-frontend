@@ -76,14 +76,15 @@ export class EquipmentService {
   // ========== Booking Operations ==========
 
   /**
-   * Create booking request for equipment
+   * UPDATED FOR OSD: 
+   * Create booking request for equipment routed through AWS Lambda / API Gateway
    */
   createBooking(equipmentId: string, payload: {
     userId: string;
     startDate: Date;
     endDate: Date;
   }): Observable<Booking> {
-    const url = `${this.baseUrl}/${equipmentId}/bookings`;
+    const url = `${environment.bookingLambdaUri}/equipment/${equipmentId}/bookings`;
     const body = {
       userId: payload.userId,
       startDate: payload.startDate,

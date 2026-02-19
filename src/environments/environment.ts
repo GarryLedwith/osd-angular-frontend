@@ -1,7 +1,6 @@
 export const environment = {
   production: true,
   apiUri: 'not ready yet',
-  bookingLambdaUri: 'https://WILL REPLACE_WITH_API GATEWAY_URL/booking',
+  bookingLambdaUri: 'https://bvukez92l4.execute-api.eu-west-1.amazonaws.com/prod',
 };
 
-  

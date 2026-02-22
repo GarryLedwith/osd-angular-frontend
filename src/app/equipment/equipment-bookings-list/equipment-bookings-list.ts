@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -57,13 +57,25 @@ export class EquipmentBookinsList implements OnInit {
   private equipmentService = inject(EquipmentService);  // Make API calls
   private snackBar = inject(MatSnackBar);               // Show notifications
   private router = inject(Router);                      // Navigate to other pages
-  private cdr = inject(ChangeDetectorRef);              // Force UI updates
 
-  // ========== Component State ==========
-  allBookings: BookingWithEquipment[] = [];      // All bookings from all equipment
-  filteredBookings: BookingWithEquipment[] = []; // Bookings after applying filter
-  loading = false;                               // Show spinner while loading
-  selectedStatus: BookingStatus | '' = '';       // Current status filter ('' = all)
+  // ========== Signal-based State ==========
+  // Signal holding all active bookings fetched from the API
+  allBookings = signal<BookingWithEquipment[]>([]);
+
+  // Scalar signal for the currently selected status filter ('' means show all)
+  selectedStatus = signal<BookingStatus | ''>('');
+
+  // Scalar signal for the loading spinner
+  loading = signal(false);
+
+  // Computed signal: automatically re-derives the filtered list whenever
+  // allBookings or selectedStatus changes — no manual applyFilter() needed
+  filteredBookings = computed(() => {
+    const status = this.selectedStatus();
+    return status === ''
+      ? this.allBookings()
+      : this.allBookings().filter(b => b.status === status);
+  });
 
   // Status options for filter dropdown
   statusOptions: BookingStatus[] = [
@@ -100,18 +112,18 @@ export class EquipmentBookinsList implements OnInit {
    * and sorts by newest first.
    */
   loadAllBookings(): void {
-    this.loading = true;
+    this.loading.set(true);
 
     this.equipmentService.getEquipmentList().subscribe({
       next: (equipmentList: Equipment[]) => {
-        // Extract bookings from all equipment
-        this.allBookings = [];
+        // Build the combined bookings array
+        const combined: BookingWithEquipment[] = [];
 
         equipmentList.forEach(equipment => {
           if (equipment.bookings && equipment.bookings.length > 0) {
             // Add equipment info to each booking
             equipment.bookings.forEach(booking => {
-              this.allBookings.push({
+              combined.push({
                 ...booking,
                 equipmentId: equipment._id,
                 equipmentName: equipment.name,
@@ -122,27 +134,25 @@ export class EquipmentBookinsList implements OnInit {
         });
 
         // Keep only active bookings (exclude denied and returned)
-        this.allBookings = this.allBookings.filter(
+        const active = combined.filter(
           booking => booking.status !== 'denied' && booking.status !== 'returned'
         );
 
         // Sort by creation date (newest first)
-        this.allBookings.sort((a, b) => {
+        active.sort((a, b) => {
           const dateA = new Date(a.createdAt || 0).getTime();
           const dateB = new Date(b.createdAt || 0).getTime();
           return dateB - dateA;
         });
 
-        // Apply filter
-        this.applyFilter();
+        // Update the signal filteredBookings computed will react automatically
+        this.allBookings.set(active);
+        this.loading.set(false);
 
-        this.loading = false;
-        this.cdr.detectChanges();
-
-        console.log('All active bookings loaded:', this.allBookings);
+        console.log('All active bookings loaded:', this.allBookings());
       },
       error: (err) => {
-        this.loading = false;
+        this.loading.set(false);
         console.error('Error loading bookings:', err);
         this.snackBar.open(`Failed to load bookings: ${err.message}`, 'Close', {
           duration: 4000
@@ -152,27 +162,10 @@ export class EquipmentBookinsList implements OnInit {
   }
 
   /**
-   * Filter bookings by status
-   *
-   * If no status selected, show all bookings.
-   * Otherwise, show only bookings with selected status.
-   */
-  applyFilter(): void {
-    if (this.selectedStatus === '') {
-      this.filteredBookings = [...this.allBookings];
-    } else {
-      this.filteredBookings = this.allBookings.filter(
-        booking => booking.status === this.selectedStatus
-      );
-    }
-  }
-
-  /**
-   * Update filter when user selects a status
+   * Update the status filter signal filteredBookings computed reacts automatically
    */
   onStatusFilterChange(status: BookingStatus | ''): void {
-    this.selectedStatus = status;
-    this.applyFilter();
+    this.selectedStatus.set(status);
   }
 
   /**

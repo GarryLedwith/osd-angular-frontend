@@ -83,7 +83,7 @@
 <div class="table-container">
   <table
     mat-table
-    [dataSource]="equipment"
+    [dataSource]="equipment()"
     class="equipment-table mat-elevation-z2"
   >
     <!-- NAME Column -->
@@ -199,7 +199,7 @@
 
     <!-- EMPTY STATE -->
     <!-- Displayed when no equipment matches current filters or database is empty -->
-    @if (!loading && (!equipment || equipment.length === 0)) {
+    @if (!loading() && equipment().length === 0) {
       <tr class="empty-row">
         <td [attr.colspan]="cols.length">
           <div class="empty-state">
@@ -213,7 +213,7 @@
 
     <!-- LOADING STATE -->
     <!-- Displayed while fetching equipment data from backend -->
-    @if (loading) {
+    @if (loading()) {
       <tr class="loading-row">
         <td [attr.colspan]="cols.length">
           <div class="loading-state">
@@ -228,11 +228,11 @@
 
 <!-- RESULTS SUMMARY -->
 <!-- Shows count of displayed equipment items -->
-@if (!loading && equipment.length > 0) {
+@if (!loading() && equipment().length > 0) {
   <div class="results-summary">
     <p>
       <mat-icon class="summary-icon">inventory</mat-icon>
-      Showing <strong>{{ equipment.length }}</strong> {{ equipment.length === 1 ? 'item' : 'items' }}
+      Showing <strong>{{ equipment().length }}</strong> {{ equipment().length === 1 ? 'item' : 'items' }}
     </p>
   </div>
 }

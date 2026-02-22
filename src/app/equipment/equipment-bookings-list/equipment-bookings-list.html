@@ -20,7 +20,7 @@
       <div class="filter-row">
         <mat-form-field appearance="outline" class="status-filter">
           <mat-label>Filter by Status</mat-label>
-          <mat-select [(value)]="selectedStatus" (selectionChange)="applyFilter()">
+          <mat-select [value]="selectedStatus()" (selectionChange)="onStatusFilterChange($event.value)">
             <mat-option value="">All Active Bookings</mat-option>
             @for (status of statusOptions; track status) {
               <mat-option [value]="status">
@@ -33,14 +33,14 @@
 
         <div class="booking-count">
           <mat-icon>info</mat-icon>
-          <span>Showing {{ filteredBookings.length }} of {{ allBookings.length }} active bookings</span>
+          <span>Showing {{ filteredBookings().length }} of {{ allBookings().length }} active bookings</span>
         </div>
       </div>
     </mat-card-content>
   </mat-card>
 
   <!-- LOADING STATE -->
-  @if (loading) {
+  @if (loading()) {
     <div class="loading-container">
       <mat-icon class="loading-icon">hourglass_empty</mat-icon>
       <p>Loading bookings...</p>
@@ -48,12 +48,12 @@
   }
 
   <!-- BOOKINGS TABLE -->
-  @if (!loading) {
+  @if (!loading()) {
     <mat-card class="table-card">
     <mat-card-content>
       <table
         mat-table
-        [dataSource]="filteredBookings"
+        [dataSource]="filteredBookings()"
         class="bookings-table mat-elevation-z2"
       >
         <!-- EQUIPMENT NAME Column -->
@@ -181,15 +181,15 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
 
         <!-- EMPTY STATE -->
-        @if (!loading && filteredBookings.length === 0) {
+        @if (!loading() && filteredBookings().length === 0) {
           <tr class="empty-row">
             <td [attr.colspan]="displayedColumns.length">
               <div class="empty-state">
                 <mat-icon class="empty-icon">event_busy</mat-icon>
                 <p class="empty-message">No active bookings found</p>
                 <p class="empty-hint">
-                  @if (selectedStatus) {
-                    No bookings with status "{{ selectedStatus }}"
+                  @if (selectedStatus()) {
+                    No bookings with status "{{ selectedStatus() }}"
                   } @else {
                     There are currently no active bookings in the system
                   }

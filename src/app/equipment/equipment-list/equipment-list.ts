@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -42,9 +42,9 @@ import { EquipmentService } from '../equipment.service';
   styleUrl: './equipment-list.scss'
 })
 export class EquipmentList implements OnInit {
-  // ========== Component State ==========
-  equipment: Equipment[] = [];  // List of equipment from API
-  loading = false;              // Show spinner while loading
+  // ========== Signal-based State ==========
+  equipment = signal<Equipment[]>([]);  // List of equipment from API
+  loading   = signal(false);            // Show spinner while loading
   cols: string[] = ['name', 'category', 'status', 'location', 'actions'];  // Table columns
   filterForm: FormGroup;        // Form for category, status, search filters
 
@@ -80,16 +80,16 @@ export class EquipmentList implements OnInit {
    * Get equipment from API with filters
    */
   loadEquipment(filters?: { category?: string; status?: string}): void {
-    this.loading = true;
+    this.loading.set(true);
 
     this.equipmentService.getEquipmentList(filters).subscribe({
       next: (data) => {
-        this.equipment = data;
-        this.loading = false;
+        this.equipment.set(data);
+        this.loading.set(false);
       },
       error: (err) => {
         console.error('Failed to load equipment:', err);
-        this.loading = false;
+        this.loading.set(false);
       }
     });
   }

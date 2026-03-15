@@ -2,6 +2,8 @@ import { Component, inject } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthCustomService } from '../auth/auth-custom.service';
 import { AsyncPipe } from '@angular/common';
@@ -13,6 +15,8 @@ import { AsyncPipe } from '@angular/common';
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
+    MatMenuModule,
+    MatDividerModule,
     RouterLink,
     RouterLinkActive,
     AsyncPipe

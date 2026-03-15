@@ -112,7 +112,7 @@ exports.handler = async (event) => {
 
     const result = await equipmentCollection.updateOne(
       { _id: new ObjectId(equipmentId) },
-      { $push: { bookings: booking }, $set: { updatedAt: new Date() } }
+      { $push: { bookings: booking }, $set: { status: 'unavailable', updatedAt: new Date() } }
     );
 
     if (result.matchedCount === 0) {

@@ -94,6 +94,11 @@ export class EquipmentService {
       .pipe(catchError(this.handleError));
   }
 
+  deleteBooking(equipmentId: string, bookingId: string): Observable<void> {
+    const url = `${this.baseUrl}/${equipmentId}/bookings/${bookingId}`;
+    return this.http.delete<void>(url).pipe(catchError(this.handleError));
+  }
+
   /**
    * Get all bookings for equipment (optional status filter)
    */

@@ -175,6 +175,20 @@ export class EquipmentBookinsList implements OnInit {
     this.router.navigate(['/equipment', equipmentId]);
   }
 
+  onDeleteBooking(booking: BookingWithEquipment): void {
+    if (!booking._id) return;
+    const bookingId = booking._id.toString();
+    this.equipmentService.deleteBooking(booking.equipmentId, bookingId).subscribe({
+      next: () => {
+        this.allBookings.update(bookings => bookings.filter(b => b._id?.toString() !== bookingId));
+        this.snackBar.open('Booking deleted', 'OK', { duration: 3000 });
+      },
+      error: (err) => {
+        this.snackBar.open(`Failed to delete booking: ${err.message}`, 'Close', { duration: 4000 });
+      }
+    });
+  }
+
   /**
    * Get CSS class for status badge styling
    */

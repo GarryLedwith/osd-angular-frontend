@@ -15,6 +15,7 @@ import { Router, RouterModule } from '@angular/router';
 
 import { Equipment } from '../equipment.interface';
 import { EquipmentService } from '../equipment.service';
+import { AuthCustomService } from '../../auth/auth-custom.service';
 
 /**
  * Equipment List Component
@@ -53,6 +54,11 @@ export class EquipmentList implements OnInit {
   private equipmentService = inject(EquipmentService);  // Make API calls
   private router = inject(Router);              // Navigate to other pages
   private snackBar = inject(MatSnackBar);       // Show notifications
+  private authService = inject(AuthCustomService);      // Role-based access
+
+  get isAdmin(): boolean {
+    return this.authService.currentUser$.value?.role === 'admin';
+  }
 
   /**
    * Set up filter form with automatic reload

@@ -31,9 +31,10 @@ export class AuthCustomService {
   constructor() {
     
 
-    // Set the current user from localStorage
+    // Set the current user from localStorage (null if not present)
+    const storedUser = localStorage.getItem('user');
     this.currentUser$ = new BehaviorSubject<User | null>(
-      JSON.parse(localStorage.getItem('user') || '{}')
+      storedUser ? JSON.parse(storedUser) : null
     );
     // Check if there's a saved token in localStorage
     const token = localStorage.getItem('token') || '';

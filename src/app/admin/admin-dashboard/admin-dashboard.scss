@@ -1,0 +1,136 @@
+.dashboard-container {
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.dashboard-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 28px;
+  color: #333;
+
+  mat-icon {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #555;
+  margin: 28px 0 12px;
+}
+
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+.error-message {
+  color: #d32f2f;
+  text-align: center;
+  padding: 24px;
+}
+
+// ── Stats grid (4 columns) ─────────────────────────────────────────────────
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.stat-card {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  mat-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+    text-align: center;
+    gap: 6px;
+  }
+
+  mat-icon {
+    font-size: 2.2rem;
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+
+  &.stat-users     mat-icon { color: #1976d2; }
+  &.stat-equipment mat-icon { color: #388e3c; }
+  &.stat-bookings  mat-icon { color: #f57c00; }
+  &.stat-pending   mat-icon { color: #7b1fa2; }
+}
+
+// ── Status grid (3 columns) ────────────────────────────────────────────────
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.status-card {
+  mat-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px;
+    text-align: center;
+    gap: 6px;
+  }
+
+  mat-icon {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  &.available   mat-icon { color: #388e3c; }
+  &.unavailable mat-icon { color: #d32f2f; }
+  &.maintenance mat-icon { color: #f57c00; }
+}
+
+// ── Shared stat display ────────────────────────────────────────────────────
+.stat-value {
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// ── Category table ─────────────────────────────────────────────────────────
+.table-card {
+  margin-top: 4px;
+}
+
+.category-table {
+  width: 100%;
+}

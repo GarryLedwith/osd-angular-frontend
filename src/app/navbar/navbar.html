@@ -18,10 +18,12 @@
       <mat-icon>devices</mat-icon>
       Equipment
     </button>
-    <button mat-button routerLink="/users" routerLinkActive="active">
-      <mat-icon>people</mat-icon>
-      Users
-    </button>
+    @if ((currentUser$ | async)?.role === 'admin') {
+      <button mat-button routerLink="/users" routerLinkActive="active">
+        <mat-icon>people</mat-icon>
+        Users
+      </button>
+    }
     <button mat-button routerLink="/equipment/bookings" routerLinkActive="active">
       <mat-icon>event</mat-icon>
       Bookings

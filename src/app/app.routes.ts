@@ -10,6 +10,7 @@ import { UserDetail } from './users/user-detail/user-detail';
 import { EquipmentBookingDetail } from './equipment/equipment-booking-detail/equipment-booking-detail';
 import { EquipmentBookinsList } from './equipment/equipment-bookings-list/equipment-bookings-list';
 import { LoginComponent } from './login/login';
+import { AdminDashboard } from './admin/admin-dashboard/admin-dashboard';
 import { authGuard } from './auth/auth-guard';
 import { adminGuard } from './auth/auth-guard';
 
@@ -23,6 +24,9 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
 
   
+
+  // Admin dashboard
+  { path: 'admin', component: AdminDashboard, canActivate: [authGuard, adminGuard] },
 
   // User routes
   { path: 'users', component: UsersList, canActivate: [authGuard, adminGuard] }, // List all users (admin only)

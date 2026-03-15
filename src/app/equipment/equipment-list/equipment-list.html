@@ -63,17 +63,18 @@
         Refresh
       </button>
 
-      <!-- ADD NEW Button -->
-      <!-- Navigates to equipment creation form -->
-      <button
-        mat-raised-button
-        color="accent"
-        type="button"
-        class="action-button"
-        routerLink="/equipment/new">
-        <mat-icon>add</mat-icon>
-        Add Equipment
-      </button>
+      <!-- ADD NEW Button (admin only) -->
+      @if (isAdmin) {
+        <button
+          mat-raised-button
+          color="accent"
+          type="button"
+          class="action-button"
+          routerLink="/equipment/new">
+          <mat-icon>add</mat-icon>
+          Add Equipment
+        </button>
+      }
     </div>
   </form>
 </div>
@@ -162,23 +163,27 @@
         </div>
       </th>
       <td mat-cell *matCellDef="let item" class="actions-cell">
-        <!-- Edit Button: Opens equipment form in edit mode -->
-        <button
-          mat-icon-button
-          color="primary"
-          matTooltip="Edit Equipment"
-          (click)="onEdit(item)">
-          <mat-icon>edit</mat-icon>
-        </button>
+        <!-- Edit Button: Admin only -->
+        @if (isAdmin) {
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Edit Equipment"
+            (click)="onEdit(item)">
+            <mat-icon>edit</mat-icon>
+          </button>
+        }
 
-        <!-- Delete Button: Shows confirmation then deletes equipment -->
-        <button
-          mat-icon-button
-          color="warn"
-          matTooltip="Delete Equipment"
-          (click)="onDelete(item)">
-          <mat-icon>delete</mat-icon>
-        </button>
+        <!-- Delete Button: Admin only -->
+        @if (isAdmin) {
+          <button
+            mat-icon-button
+            color="warn"
+            matTooltip="Delete Equipment"
+            (click)="onDelete(item)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
 
         <!-- View Bookings Button: Shows booking history for this equipment -->
         <button

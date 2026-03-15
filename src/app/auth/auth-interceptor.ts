@@ -18,8 +18,11 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   // Get the JWT token from localStorage
   const jwt = localStorage.getItem('token');
 
-  // Clone the request to add the Authorization header if it's an API request
-  const authRequest = req.url.startsWith(apiUri) && jwt
+  const lambdaUri = `${environment.bookingLambdaUri}`;
+
+  // Clone the request to add the Authorization header if it's an API or Lambda request
+  const isAuthorizedEndpoint = req.url.startsWith(apiUri) || req.url.startsWith(lambdaUri);
+  const authRequest = isAuthorizedEndpoint && jwt
     ? req.clone({ setHeaders: { Authorization: `Bearer ${jwt}` } })
     : req;
 

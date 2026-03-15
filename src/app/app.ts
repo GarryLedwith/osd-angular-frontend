@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { Navbar } from './navbar/navbar';
+import { GoogleAnalyticsService } from './analytics/google-analytics.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +16,19 @@ import { Navbar } from './navbar/navbar';
   `,
   styleUrls: ['./app.scss']
 })
-export class AppComponent {}
+export class AppComponent implements OnInit {
+  private router = inject(Router);
+  private ga = inject(GoogleAnalyticsService);
+
+  ngOnInit(): void {
+    // Track a page_view on every completed navigation
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(event => {
+        this.ga.trackPageView((event as NavigationEnd).urlAfterRedirects);
+      });
+  }
+}
 
 
 

@@ -9,6 +9,8 @@ import { timeout } from 'rxjs/operators';
 import { EquipmentService } from '../equipment.service';
 import { Equipment, Booking } from '../equipment.interface';
 import { EquipmentBookingForm } from '../equipment-booking-form/equipment-booking-form';
+import { GoogleAnalyticsService } from '../../analytics/google-analytics.service';
+import { AuthCustomService } from '../../auth/auth-custom.service';
 
 /**
  * Equipment Booking Detail Component (Student View)
@@ -41,6 +43,8 @@ export class EquipmentBookingDetail implements OnInit {
   private equipmentService = inject(EquipmentService);  // Make API calls
   private snackBar = inject(MatSnackBar);               // Show notifications
   private cdr = inject(ChangeDetectorRef);              // Force UI updates
+  private ga = inject(GoogleAnalyticsService);          // Google Analytics tracking
+  private authService = inject(AuthCustomService);      // Current logged-in user
 
   // ========== Component State ==========
   equipment: Equipment | null = null;  // Equipment details from API
@@ -111,10 +115,9 @@ export class EquipmentBookingDetail implements OnInit {
   onCreateBooking(event: { startDate: Date; endDate: Date }): void {
     if (!this.equipment?._id) return;
 
-    // TODO: Get real user ID from authentication service
-    // Hardcoded for now but can replace with: this.authService.getCurrentUserId()
-    // Part 3 of assignment covers authentication
-    const userId = '68f266bf45d2c479aedb96ce';
+    
+    const userId = this.authService.currentUser$.value?._id;
+    if (!userId) return;
 
     // Send booking request to API
     this.equipmentService
@@ -125,6 +128,11 @@ export class EquipmentBookingDetail implements OnInit {
       })
       .subscribe({
         next: () => {
+          // Track booking submission in Google Analytics
+          this.ga.trackBookingSubmitted(
+            this.equipment!._id,
+            this.equipment!.name
+          );
           // Show success message
           this.snackBar.open('Booking request submitted (pending approval).', 'OK', {
             duration: 3000

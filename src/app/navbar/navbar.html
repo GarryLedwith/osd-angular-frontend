@@ -19,6 +19,10 @@
       Equipment
     </button>
     @if ((currentUser$ | async)?.role === 'admin') {
+      <button mat-button routerLink="/admin" routerLinkActive="active">
+        <mat-icon>dashboard</mat-icon>
+        Dashboard
+      </button>
       <button mat-button routerLink="/users" routerLinkActive="active">
         <mat-icon>people</mat-icon>
         Users

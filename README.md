@@ -26,9 +26,20 @@ Open `http://localhost:4200/`.
 ```bash
 # Angular
 ng test
+```
 
-# Lambda (from lambda/ directory)
-cd lambda && npm test
+## Lambda tests
+
+From inside the `lambda/` directory:
+
+```bash
+cd lambda
+
+# Unit tests with coverage
+npm test
+
+# Unit tests only (no coverage)
+npx jest __tests__/handler.unit.test.js
 ```
 
 ## Production build

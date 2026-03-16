@@ -4,9 +4,7 @@
   "description": "AWS Lambda – POST /equipment/{id}/bookings",
   "main": "index.js",
   "scripts": {
-    "test:unit": "jest __tests__/handler.unit.test.js --coverage",
-    "test:integration": "jest __tests__/handler.integration.test.js --testTimeout=20000",
-    "test": "npm run test:unit"
+    "test": "jest __tests__/handler.unit.test.js --coverage"
   },
   "dependencies": {
     "jsonwebtoken": "^9.0.2",

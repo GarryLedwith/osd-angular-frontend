@@ -13,7 +13,7 @@ function makeEvent({ method = 'POST', id = VALID_EQUIPMENT_ID, body = {}, authHe
   };
 }
 
-describe('Lambda handler – unit tests', () => {
+describe('Lambda handler - unit tests', () => {
   let handler;
   let mockUpdateOne;
 
@@ -47,7 +47,7 @@ describe('Lambda handler – unit tests', () => {
     handler = require('../index').handler;
   });
 
-  // ── CORS preflight ─────────────────────────────────────────────────────────
+  //  CORS preflight 
 
   test('returns 200 for OPTIONS preflight', async () => {
     const event = makeEvent({ method: 'OPTIONS' });
@@ -80,7 +80,7 @@ describe('Lambda handler – unit tests', () => {
     expect(JSON.parse(result.body).message).toBe('Invalid or expired token');
   });
 
-  // ── Equipment ID validation ────────────────────────────────────────────────
+  //  Equipment ID validation
 
   test('returns 400 for an invalid equipment ID', async () => {
     const event = makeEvent({ id: 'not-a-valid-objectid' });
@@ -89,7 +89,7 @@ describe('Lambda handler – unit tests', () => {
     expect(JSON.parse(result.body).message).toContain('Invalid equipment ID');
   });
 
-  // ── Body validation ────────────────────────────────────────────────────────
+  //  Body validation
 
   test('returns 400 for malformed JSON body', async () => {
     const event = makeEvent();
@@ -141,7 +141,7 @@ describe('Lambda handler – unit tests', () => {
     expect(JSON.parse(result.body).message).toContain('endDate');
   });
 
-  // ── Success & DB edge-cases ────────────────────────────────────────────────
+  //  Success & DB edge-cases
 
   test('returns 201 with booking data for a valid payload', async () => {
     const event = makeEvent({

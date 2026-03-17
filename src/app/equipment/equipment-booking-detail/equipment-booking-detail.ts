@@ -128,6 +128,16 @@ export class EquipmentBookingDetail implements OnInit {
       })
       .subscribe({
         next: () => {
+          // Mark equipment as unavailable now that it has a pending booking
+          this.equipmentService.patchEquipment(this.equipment!._id, { status: 'unavailable' })
+            .subscribe({
+              next: (updated) => {
+                this.equipment = updated;
+                this.cdr.detectChanges();
+              },
+              error: () => {} 
+            });
+
           // Track booking submission in Google Analytics
           this.ga.trackBookingSubmitted(
             this.equipment!._id,

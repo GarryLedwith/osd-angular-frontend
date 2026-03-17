@@ -1,9 +1,12 @@
 'use strict';
 
+// Valid MongoDB ObjectId strings used as test fixtures
 const VALID_EQUIPMENT_ID = '507f1f77bcf86cd799439011';
 const VALID_USER_ID = '507f1f77bcf86cd799439012';
 const VALID_TOKEN = 'test.jwt.token';
 
+// Helper function to build a mock API Gateway event object.
+// Defaults to a valid POST request; individual fields can be overridden per test.
 function makeEvent({ method = 'POST', id = VALID_EQUIPMENT_ID, body = {}, authHeader = `Bearer ${VALID_TOKEN}` } = {}) {
   return {
     httpMethod: method,
@@ -17,8 +20,12 @@ describe('Lambda handler - unit tests', () => {
   let handler;
   let mockUpdateOne;
 
+  // Before each test: reset modules so mocks don't leak between tests,
+  // then set up fresh mocks for MongoDB and jsonwebtoken.
   beforeEach(() => {
     jest.resetModules();
+
+    // Mock MongoDB updateOne resolves with matchedCount: 1 (success) by default.
 
     mockUpdateOne = jest.fn().mockResolvedValue({ matchedCount: 1 });
     const mockCollection = { updateOne: mockUpdateOne };
@@ -31,23 +38,29 @@ describe('Lambda handler - unit tests', () => {
     jest.doMock('mongodb', () => {
       const actual = jest.requireActual('mongodb');
       return {
+        // Replaces MongoClient with a mock but keep the real ObjectId for validation logic
         MongoClient: jest.fn().mockImplementation(() => mockClient),
         ObjectId: actual.ObjectId,
       };
     });
 
+    // Mock jsonwebtoken verify() returns a decoded payload by default (valid token)
     jest.doMock('jsonwebtoken', () => ({
       verify: jest.fn().mockReturnValue({ userId: VALID_USER_ID }),
     }));
 
+    // Set required environment variables that the Lambda reads at runtime
     process.env.JWTSECRET = 'test-secret';
     process.env.DB_CONN_STRING = 'mongodb://localhost:27017';
     process.env.DB_NAME = 'test_db';
 
+    // Load the handler fresh after mocks are in place
     handler = require('../index').handler;
   });
 
   //  CORS preflight 
+  // API Gateway sends an OPTIONS request before cross-origin POST requests.
+
 
   test('returns 200 for OPTIONS preflight', async () => {
     const event = makeEvent({ method: 'OPTIONS' });
@@ -56,7 +69,8 @@ describe('Lambda handler - unit tests', () => {
     expect(result.headers['Access-Control-Allow-Origin']).toBe('*');
   });
 
-  // ── Auth checks ────────────────────────────────────────────────────────────
+  //  Auth checks 
+  // Every request (except OPTIONS) must include a valid Bearer JWT.
 
   test('returns 401 when no Authorization header', async () => {
     const event = makeEvent({ authHeader: null });
@@ -72,6 +86,7 @@ describe('Lambda handler - unit tests', () => {
   });
 
   test('returns 403 for an invalid or expired JWT', async () => {
+   
     const jwt = require('jsonwebtoken');
     jwt.verify.mockImplementation(() => { throw new Error('jwt expired'); });
     const event = makeEvent();
@@ -81,6 +96,7 @@ describe('Lambda handler - unit tests', () => {
   });
 
   //  Equipment ID validation
+  // The equipment ID comes from the URL path and must be a valid MongoDB ObjectId.
 
   test('returns 400 for an invalid equipment ID', async () => {
     const event = makeEvent({ id: 'not-a-valid-objectid' });
@@ -89,7 +105,8 @@ describe('Lambda handler - unit tests', () => {
     expect(JSON.parse(result.body).message).toContain('Invalid equipment ID');
   });
 
-  //  Body validation
+  // Body validation 
+  // The request body must be valid JSON containing userId, startDate, and endDate.
 
   test('returns 400 for malformed JSON body', async () => {
     const event = makeEvent();
@@ -141,7 +158,7 @@ describe('Lambda handler - unit tests', () => {
     expect(JSON.parse(result.body).message).toContain('endDate');
   });
 
-  //  Success & DB edge-cases
+  // Success & DB edge-cases 
 
   test('returns 201 with booking data for a valid payload', async () => {
     const event = makeEvent({
@@ -150,6 +167,7 @@ describe('Lambda handler - unit tests', () => {
     const result = await handler(event);
     expect(result.statusCode).toBe(201);
     const booking = JSON.parse(result.body);
+    // Check the returned booking has the expected fields and status
     expect(booking.userId).toBe(VALID_USER_ID);
     expect(booking.status).toBe('pending');
     expect(booking).toHaveProperty('_id');
@@ -157,6 +175,7 @@ describe('Lambda handler - unit tests', () => {
   });
 
   test('returns 404 when equipment document is not found', async () => {
+    // Simulate no document matching the equipment ID in the database
     mockUpdateOne.mockResolvedValue({ matchedCount: 0 });
     const event = makeEvent({
       body: { userId: VALID_USER_ID, startDate: '2025-06-01', endDate: '2025-06-07' },
@@ -167,6 +186,7 @@ describe('Lambda handler - unit tests', () => {
   });
 
   test('returns 500 when the DB write throws an error', async () => {
+    // Simulate a database connection failure during the write operation
     mockUpdateOne.mockRejectedValue(new Error('DB connection lost'));
     const event = makeEvent({
       body: { userId: VALID_USER_ID, startDate: '2025-06-01', endDate: '2025-06-07' },

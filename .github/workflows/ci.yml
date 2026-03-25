@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  # ── CI: Lambda — unit tests ────────────────────────────────────────────────
+  #  CI: Lambda — unit tests 
   ci-lambda:
     name: Lambda — Unit Tests
     runs-on: ubuntu-latest
